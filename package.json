@@ -1,0 +1,40 @@
+{
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "basic snake game written in Typescript",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "serve": "webpack serve --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/serkanyersen/snake.git"
+  },
+  "keywords": [
+    "snake"
+  ],
+  "author": "Serkan Yersen <serkanyersen@gmail.com> (http://serkan.io/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/serkanyersen/snake/issues"
+  },
+  "homepage": "https://gitlab.com/serkanyersen/snake#README",
+  "dependencies": {
+    "gh-pages": "^2.0.1"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.1",
+    "file-loader": "^6.2.0",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.55.0",
+    "sass-loader": "^13.1.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  }
+}
