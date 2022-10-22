@@ -170,7 +170,8 @@ export default class Game extends BaseGame {
         this.growth += 1; // Snake got bigger
       }
 
-      this.updateScore(type === "food" ? 10 : 50); // Calculate the new score
+      //EXTRA FELADAT: NEM TESZTELTEM, NÉZZÜK MEG, ELMÉLETILEG ENNYIKE
+      this.updateScore(type === "food" ? 1 : -2); // Calculate the new score
       this.showScore(); // Update the score
     }
   }
@@ -248,6 +249,11 @@ export default class Game extends BaseGame {
 
   showScore(): void {
     const points = document.getElementById("points") as HTMLDivElement;
+
+    //EXTRA FELADAT: NEM TESZTELTEM, NÉZZÜK MEG, ELMÉLETILEG ENNYIKE
+    if (this.score === 20) {
+      this.score = 0;
+    }
 
     // Speed: ${Math.floor(1000 / this.getSpeed())}bps
     points.innerHTML = `${this.score}`;

@@ -3,12 +3,14 @@ export enum keys {
   SPACE = 32,
   LEFT = 37,
   UP = 38,
-  RIGHT = 39,
+  RIGHT = 0,
+  //EXTRA FELADAT: NEM TESZTELTEM, NÉZZÜK MEG, ELMÉLETILEG ENNYIKE
+  //RIGHT = 39,
   DOWN = 40,
   C = 67,
   G = 71,
   J = 74,
-  K = 75
+  K = 75,
 }
 
 export const SIZE = 40;
