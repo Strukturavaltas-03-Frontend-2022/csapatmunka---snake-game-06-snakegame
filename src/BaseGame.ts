@@ -4,6 +4,16 @@ import Piece from "./Piece";
 import Utils from "./Utils";
 
 export default abstract class BaseGame implements IBaseGame {
+    head: Piece;
+    tail: Piece;
+    food: Piece | null;
+    goldenApple: Piece | null;
+    length: number;
+    growth: number;
+    score: number;
+    currentLevel: Level | null;
+    garden: HTMLDivElement;
+
     protected moving: boolean = false;
 
     protected paused: boolean = false;
@@ -22,7 +32,9 @@ export default abstract class BaseGame implements IBaseGame {
      * majd kerekítsd lefelé, ez lesz az index.
      * Majd térj vissza a this.levels tömbnek ezzel az indexével.
      */
-    abstract getRandomLevel(): Level;
+    abstract getRandomLevel(): Level {
+        return this.levels[Math.floor(Math.random() * this.levels.length)]
+    };
 
     /**
      * @returns {boolean}
@@ -30,7 +42,11 @@ export default abstract class BaseGame implements IBaseGame {
      * 2. hozz létre egy pick nevű változót, értéke random szám szorozva 100-zal
      * 3. térj vissza true értékkel, ha a pick kisebb, mint a chance
      */
-    abstract mayIHaveGoldenApple(): boolean;
+    abstract mayIHaveGoldenApple(): boolean {
+        const chance = 5;
+        const pick = Math.random() * 100;
+        return pick < chance ? true : false;
+    };
 
     /**
      * @returns {void}
@@ -42,5 +58,9 @@ export default abstract class BaseGame implements IBaseGame {
      * metódust, hogy eltávolítsd őket az oldalról
      * 4. a this.gridVisible értékét állítsd false-ra
      */
-    abstract removeGrid (): void;
+    abstract removeGrid(): void {
+        let grids = document.querySelectorAll('.vertical-grid .horizontal-grid');
+        grids.forEach(item => Utils.removeNodes(item));
+        this.gridVisible = false;
+    };
 }
