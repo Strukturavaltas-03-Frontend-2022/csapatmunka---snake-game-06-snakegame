@@ -1,45 +1,44 @@
-import { SIZE, MARGIN, SLOWEST, FASTEST, LENGTH, keys } from './constants';
-import IBaseGame from './interface/IBaseGame';
-import Piece from './Piece';
-import Utils from './Utils';
-import Level from './Level';
-import Locations from './Locations';
-import Directions from './Directions';
-import BaseGame from './BaseGame';
+import { SIZE, MARGIN, SLOWEST, FASTEST, LENGTH, keys } from "./constants";
+import IBaseGame from "./interface/IBaseGame";
+import Piece from "./Piece";
+import Utils from "./Utils";
+import Level from "./Level";
+import Locations from "./Locations";
+import Directions from "./Directions";
+import BaseGame from "./BaseGame";
 
 /**
  * FELADAT!
  * A feladat két lépésből áll:
  * 1. Pótold a hiányzó tulajdonságokat a BaseGame osztályban az IBaseGame
  * interfész alpján.
- * 2. A BaseGame osztályban található leírások alapján pótold ebben a Game 
- * osztályban a hiányzó metódusokat. Úgy találod meg őket, hogy abstract 
+ * 2. A BaseGame osztályban található leírások alapján pótold ebben a Game
+ * osztályban a hiányzó metódusokat. Úgy találod meg őket, hogy abstract
  * metódusként vannak definiálva.
  */
 export default class Game extends BaseGame {
-
-  constructor (private levels: Level[]) {
+  constructor(private levels: Level[]) {
     super();
-    this.head = new Piece({ x: 80, y: 80, type: 'head' });
+    this.head = new Piece({ x: 80, y: 80, type: "head" });
     this.tail = this.resetHead();
-    this.garden = document.getElementById('garden') as HTMLDivElement;
+    this.garden = document.getElementById("garden") as HTMLDivElement;
     this.renderGarden();
     this.handleFood();
     this.setEvents();
   }
 
-  get highScore (): number {
-    return parseInt(localStorage.getItem('high-score') || '0', 10) || 0;
+  get highScore(): number {
+    return parseInt(localStorage.getItem("high-score") || "0", 10) || 0;
   }
 
-  set highScore (value: number) {
-    localStorage.setItem('high-score', value.toString());
+  set highScore(value: number) {
+    localStorage.setItem("high-score", value.toString());
   }
 
-  renderGarden () {
+  renderGarden() {
     const { clientHeight, clientWidth } = document.body;
-    const TOP = Math.max(60, Math.floor(clientHeight * 0.10));
-    const LEFT = Math.max(60, Math.floor(clientWidth * 0.10));
+    const TOP = Math.max(60, Math.floor(clientHeight * 0.1));
+    const LEFT = Math.max(60, Math.floor(clientWidth * 0.1));
     let WIDTH = clientWidth - LEFT * 2;
     let HEIGHT = clientHeight - TOP * 2;
 
@@ -55,24 +54,20 @@ export default class Game extends BaseGame {
     this.garden.style.width = `${WIDTH}px`;
     this.garden.style.height = `${HEIGHT}px`;
 
-
-    document.documentElement.style
-      .setProperty('--size', `${SIZE}px`);
+    document.documentElement.style.setProperty("--size", `${SIZE}px`);
 
     this.showTopScore();
     this.showScore();
   }
 
-  
-
   // Remove the old chain, put HEAD in the starting position
-  resetHead (): Piece {
+  resetHead(): Piece {
     if (this.head.next) {
       this.head.next.remove();
       this.head.next = null;
     }
 
-    const x = (SIZE * LENGTH) + SIZE;
+    const x = SIZE * LENGTH + SIZE;
     const y = SIZE * 5;
     this.length = LENGTH;
     let curr = this.head;
@@ -82,14 +77,14 @@ export default class Game extends BaseGame {
       curr.next = new Piece({ x: x - SIZE * i + 2, y, prev: curr });
       curr = curr.next;
     }
-    curr.setType('tail');
+    curr.setType("tail");
     return curr;
   }
 
   /**
    * Reset all values and restart the game
    */
-  start (): void {
+  start(): void {
     // Don"t restart already running game
     if (this.moving === false) {
       this.tail = this.resetHead();
@@ -108,13 +103,13 @@ export default class Game extends BaseGame {
   /**
    * GAME OVER
    */
-  over (): void {
+  over(): void {
     this.moving = false;
     // const { score } = this;
 
     const die = (node: Piece | null) => {
       if (node === null) return;
-      node.el.classList.add('vanish');
+      node.el.classList.add("vanish");
       setTimeout(() => die(node.prev), 20);
     };
 
@@ -123,22 +118,22 @@ export default class Game extends BaseGame {
     this.splashToggle(true);
   }
 
-  showTopScore () {
-    const top = document.getElementById('top') as HTMLDivElement;
+  showTopScore() {
+    const top = document.getElementById("top") as HTMLDivElement;
     this.highScore = this.highScore < this.score ? this.score : this.highScore;
     top.innerHTML = `TOP: ${this.highScore}`;
   }
 
   // eslint-disable-next-line class-methods-use-this
-  splashToggle (show: boolean) {
-    const splash = document.querySelector('.splash') as HTMLElement;
-    splash.style.display = show ? '' : 'none';
+  splashToggle(show: boolean) {
+    const splash = document.querySelector(".splash") as HTMLElement;
+    splash.style.display = show ? "" : "none";
   }
 
   /**
    * Get a random empty location for food
    */
-  getFoodLocation (): number[] {
+  getFoodLocation(): number[] {
     let x = Utils.rand(MARGIN, this.garden.clientWidth - MARGIN, SIZE);
     let y = Utils.rand(MARGIN, this.garden.clientHeight - MARGIN, SIZE);
 
@@ -152,17 +147,20 @@ export default class Game extends BaseGame {
     return [x, y];
   }
 
-  handleFood (): void {
+  handleFood(): void {
     // If the there is no food, create a random one.
     if (this.food == null) {
       const [foodX, foodY] = this.getFoodLocation();
-      this.food = new Piece({ x: foodX, y: foodY, type: 'food' });
+      this.food = new Piece({ x: foodX, y: foodY, type: "food" });
     }
 
     // if head and food collided, replace head with the food
     // set the correct type for each piece
-    if (this.head.isCollidingWith(this.food) || this.head.isCollidingWith(this.goldenApple)) {
-      const type = this.head.isCollidingWith(this.food) ? 'food' : 'golden';
+    if (
+      this.head.isCollidingWith(this.food) ||
+      this.head.isCollidingWith(this.goldenApple)
+    ) {
+      const type = this.head.isCollidingWith(this.food) ? "food" : "golden";
 
       this.swallowFood(type);
 
@@ -172,29 +170,32 @@ export default class Game extends BaseGame {
         this.growth += 1; // Snake got bigger
       }
 
-      this.updateScore(type === 'food' ? 10 : 50); // Calculate the new score
+      //EXTRA FELADAT: NEM TESZTELTEM, NÉZZÜK MEG, ELMÉLETILEG ENNYIKE
+      this.updateScore(type === "food" ? 1 : -2); // Calculate the new score
       this.showScore(); // Update the score
     }
   }
 
-  
-
-  handleGoldenApple () {
+  handleGoldenApple() {
     if (this.goldenApple === null) {
       const [foodX, foodY] = this.getFoodLocation();
-      this.goldenApple = new Piece({ x: foodX, y: foodY, type: 'golden' });
+      this.goldenApple = new Piece({ x: foodX, y: foodY, type: "golden" });
     }
   }
 
-  async swallowFood (type: string) {
-    if (type === 'food') {
-      if (this.food == null) { return; }
+  async swallowFood(type: string) {
+    if (type === "food") {
+      if (this.food == null) {
+        return;
+      }
       this.tail.next = this.food;
       this.food.prev = this.tail;
       this.tail = this.food;
       this.food = null;
-    } else if (type === 'golden') {
-      if (this.goldenApple == null) { return; }
+    } else if (type === "golden") {
+      if (this.goldenApple == null) {
+        return;
+      }
       this.tail.next = this.goldenApple;
       this.goldenApple.prev = this.tail;
       this.tail = this.goldenApple;
@@ -205,12 +206,14 @@ export default class Game extends BaseGame {
       if (node === null) return;
       if (node.next !== null) {
         if (node.prev !== null) {
-          node.prev.el.classList.remove('gulp');
+          node.prev.el.classList.remove("gulp");
         }
 
-        node.el.classList.add('gulp');
+        node.el.classList.add("gulp");
 
-        if (this.paused || !this.moving) { return; } // if paused, stop animation
+        if (this.paused || !this.moving) {
+          return;
+        } // if paused, stop animation
 
         setTimeout(() => {
           requestAnimationFrame(() => {
@@ -226,14 +229,15 @@ export default class Game extends BaseGame {
     }
   }
 
-  getSpeed (): number {
+  getSpeed(): number {
     const initialSpeed = 200;
-    const calculated = (initialSpeed - this.growth * 0.5) + this.debugSpeed + this.keyHeld;
+    const calculated =
+      initialSpeed - this.growth * 0.5 + this.debugSpeed + this.keyHeld;
 
     return Utils.bound(calculated, FASTEST, SLOWEST);
   }
 
-  updateScore (won: number): number {
+  updateScore(won: number): number {
     if (this.noClip === true) {
       return this.score;
     }
@@ -243,14 +247,19 @@ export default class Game extends BaseGame {
     return this.score;
   }
 
-  showScore (): void {
-    const points = document.getElementById('points') as HTMLDivElement;
+  showScore(): void {
+    const points = document.getElementById("points") as HTMLDivElement;
+
+    //EXTRA FELADAT: NEM TESZTELTEM, NÉZZÜK MEG, ELMÉLETILEG ENNYIKE
+    if (this.score === 20) {
+      this.score = 0;
+    }
 
     // Speed: ${Math.floor(1000 / this.getSpeed())}bps
     points.innerHTML = `${this.score}`;
   }
 
-  frame (): void {
+  frame(): void {
     if (this.moving) {
       setTimeout(() => {
         requestAnimationFrame(this.frame.bind(this));
@@ -275,7 +284,7 @@ export default class Game extends BaseGame {
     Locations.set(this.head.x, this.head.y);
 
     // Turn tail into HEAD and move it to where head is supposed to go.
-    this.tail.setType('head');
+    this.tail.setType("head");
     switch (direction) {
       case keys.RIGHT:
         this.tail.move(this.head.x + SIZE, this.head.y, keys[direction]);
@@ -297,17 +306,17 @@ export default class Game extends BaseGame {
     // Turn the piece before the tail into new tail.
     [this.head, this.tail] = [this.tail, this.tail.prev as Piece];
     this.tail.next = null; // nothing after the tail.
-    this.tail.setType('tail');
+    this.tail.setType("tail");
 
     // turn previous head into body piece
-    prevHead.setType('body');
+    prevHead.setType("body");
     prevHead.prev = this.head;
     // if head changed direction, bend this piece accordingly.
     prevHead.bend(this.head.direction);
     Locations.set(prevHead.x, prevHead.y); // when food is eaten, there is a gap in the locations.
     this.head.prev = null; // nothing before the head
     this.head.next = prevHead; // previous head follows new head
-    this.head.setType('head'); // it is head.
+    this.head.setType("head"); // it is head.
 
     // Check if we caught caught the food
     // or we need to place a new food
@@ -318,20 +327,22 @@ export default class Game extends BaseGame {
    * Don"t let snake to go backwards
    */
   // eslint-disable-next-line class-methods-use-this
-  notBackwards (key: number): boolean {
+  notBackwards(key: number): boolean {
     const lastDirection = Directions.peek();
 
-    if ((lastDirection === keys.UP && key === keys.DOWN)
-        || (lastDirection === keys.DOWN && key === keys.UP)
-        || (lastDirection === keys.LEFT && key === keys.RIGHT)
-        || (lastDirection === keys.RIGHT && key === keys.LEFT)) {
+    if (
+      (lastDirection === keys.UP && key === keys.DOWN) ||
+      (lastDirection === keys.DOWN && key === keys.UP) ||
+      (lastDirection === keys.LEFT && key === keys.RIGHT) ||
+      (lastDirection === keys.RIGHT && key === keys.LEFT)
+    ) {
       return false;
     }
     return true;
   }
 
-  setEvents (): void {
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
+  setEvents(): void {
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
       switch (e.keyCode) {
         // Toggle Grid
         case keys.G:
@@ -344,13 +355,13 @@ export default class Game extends BaseGame {
         // Enable No Clip mode.
         case keys.C:
           this.noClip = !this.noClip;
-          this.garden.classList.toggle('noclip');
+          this.garden.classList.toggle("noclip");
           break;
         // Slowdown the snake
         case keys.J:
           this.debugSpeed += 10;
           break;
-          // Speed up the snake
+        // Speed up the snake
         case keys.K:
           this.debugSpeed -= 10;
           break;
@@ -400,73 +411,74 @@ export default class Game extends BaseGame {
       }
     });
 
-    document.addEventListener('keyup', () => {
+    document.addEventListener("keyup", () => {
       this.keyHeld = 0;
     });
 
-    document.addEventListener('click', (e: MouseEvent) => {
+    document.addEventListener("click", (e: MouseEvent) => {
       const el = e.target as HTMLElement;
-      if (el.id === 'start') {
+      if (el.id === "start") {
         this.start();
       }
     });
 
-    window.addEventListener('resize', Utils.debounce(() => {
-      this.renderGarden();
+    window.addEventListener(
+      "resize",
+      Utils.debounce(() => {
+        this.renderGarden();
 
-      if (this.currentLevel) {
-        this.currentLevel.remove();
-        this.currentLevel.render();
-      }
+        if (this.currentLevel) {
+          this.currentLevel.remove();
+          this.currentLevel.render();
+        }
 
-      if (this.gridVisible) {
-        this.removeGrid();
-        this.drawGrid();
-      }
+        if (this.gridVisible) {
+          this.removeGrid();
+          this.drawGrid();
+        }
 
-      if (this.food !== null) {
-        this.food.remove();
-        this.food = null;
-        this.handleFood();
-      }
+        if (this.food !== null) {
+          this.food.remove();
+          this.food = null;
+          this.handleFood();
+        }
 
-      if (this.goldenApple !== null) {
-        this.goldenApple.remove();
-        this.goldenApple = null;
-        this.handleGoldenApple();
-      }
-    }, 100));
+        if (this.goldenApple !== null) {
+          this.goldenApple.remove();
+          this.goldenApple = null;
+          this.handleGoldenApple();
+        }
+      }, 100)
+    );
   }
 
-  
-
-  drawGrid (): void {
+  drawGrid(): void {
     for (let x = 0; x < this.garden.clientWidth; x += SIZE) {
-      const div = document.createElement('div');
-      div.style.top = '0px';
+      const div = document.createElement("div");
+      div.style.top = "0px";
       div.style.left = `${x}px`;
-      div.classList.add('vertical-grid');
+      div.classList.add("vertical-grid");
       this.garden.appendChild(div);
     }
 
     for (let x = 0; x < this.garden.clientHeight; x += SIZE) {
-      const div = document.createElement('div');
-      div.style.left = '0px';
+      const div = document.createElement("div");
+      div.style.left = "0px";
       div.style.top = `${x}px`;
-      div.classList.add('horizontal-grid');
+      div.classList.add("horizontal-grid");
       this.garden.appendChild(div);
     }
 
     this.gridVisible = true;
   }
 
-  drawHitboxes () {
-    document.querySelectorAll('.hitbox').forEach(Utils.removeNode);
+  drawHitboxes() {
+    document.querySelectorAll(".hitbox").forEach(Utils.removeNode);
 
     Locations.getAll().forEach((a, k) => {
-      const [x, y] = k.split(':');
-      const hitbox = document.createElement('div');
-      hitbox.classList.add('hitbox');
+      const [x, y] = k.split(":");
+      const hitbox = document.createElement("div");
+      hitbox.classList.add("hitbox");
       hitbox.style.top = `${y}px`;
       hitbox.style.left = `${x}px`;
       this.garden.append(hitbox);
