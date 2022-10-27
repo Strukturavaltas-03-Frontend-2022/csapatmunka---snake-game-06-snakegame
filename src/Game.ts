@@ -17,6 +17,30 @@ import BaseGame from "./BaseGame";
  * metódusként vannak definiálva.
  */
 export default class Game extends BaseGame {
+  head: Piece;
+    
+  tail: Piece;
+
+  /** @default null */
+  food: Piece | null;
+  
+  /** @default null */
+  goldenApple: Piece | null;
+
+  /** @default 0 */
+  length: number;
+
+  /** @default 0 */
+  growth: number;
+
+  /** @default 0 */
+  score: number;
+
+  /** @default null */
+  currentLevel: Level | null;
+
+  garden: HTMLDivElement;
+  
   constructor(private levels: Level[]) {
     super();
     this.head = new Piece({ x: 80, y: 80, type: "head" });
@@ -483,5 +507,46 @@ export default class Game extends BaseGame {
       hitbox.style.left = `${x}px`;
       this.garden.append(hitbox);
     });
+  }
+
+  /**
+   * @returns {number}
+   * Egy random számot szorozz meg a this.levels.length-szel, 
+   * majd kerekítsd lefelé, ez lesz az index.
+   * Majd térj vissza a this.levels tömbnek ezzel az indexével.
+   */
+  getRandomLevel(): Level {
+    let index = Math.floor(Math.random() * this.levels.length);
+    return this.levels[index];
+  }
+
+  /**
+   * @returns {boolean}
+   * 1. hozz létre egy chance nevű változót 5 értékkel
+   * 2. hozz létre egy pick nevű változót, értéke random szám szorozva 100-zal
+   * 3. térj vissza true értékkel, ha a pick kisebb, mint a chance
+   */
+  mayIHaveGoldenApple(): boolean {
+    let chance: number = 5;
+    let pick: number = Math.random() * 100;
+    return pick < chance;
+  }
+   
+  /**
+   * @returns {void}
+   * A metódus feladatai:
+   * 1. keresd meg a DOM-ban az összes .vertical-grid és .horizontal-grid 
+   * elemet
+   * 2. mentsd el őket egy grids nevű változóba
+   * 3. járd be a tömböt, és minden elemére hívd meg a Utils.removeNode 
+   * metódust, hogy eltávolítsd őket az oldalról
+   * 4. a this.gridVisible értékét állítsd false-ra
+   */
+  removeGrid (): void {
+    const grids: NodeListOf<Element> = document.querySelectorAll('.vertical-grid, .horizontal-grid');
+    grids.forEach((grid) => {
+      Utils.removeNode(grid)}
+    );
+    this.gridVisible = false;
   }
 }

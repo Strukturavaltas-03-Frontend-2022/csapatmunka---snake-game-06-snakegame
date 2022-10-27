@@ -25,7 +25,7 @@ export default class Level {
    * @returns {coord} - egy [x, y] koordinátával tér vissza
    */
   translate (x: number, y: number): [number, number] {
-    return [Math.floor(x)*SIZE, Math.floor(y)*SIZE,];
+    return [Math.floor(x)*SIZE, Math.floor(y)*SIZE];
   }
 
   remove (): void {
