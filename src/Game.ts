@@ -180,9 +180,10 @@ export default class Game extends BaseGame {
 
     // if head and food collided, replace head with the food
     // set the correct type for each piece
+    
     if (
-      this.head.isCollidingWith(this.food) ||
-      this.head.isCollidingWith(this.goldenApple)
+      this.head.isCollidingWith(this.food) /*||
+      this.head.isCollidingWith(this.goldenApple)*/
     ) {
       const type = this.head.isCollidingWith(this.food) ? "food" : "golden";
 
@@ -198,6 +199,7 @@ export default class Game extends BaseGame {
       this.updateScore(type === "food" ? 1 : -2); // Calculate the new score
       this.showScore(); // Update the score
     }
+    
   }
 
   handleGoldenApple() {
